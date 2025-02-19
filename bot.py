@@ -6,7 +6,7 @@ from requests_tor import RequestsTor
 import os
 
 # Укажите здесь ваш токен Telegram-бота
-BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
+BOT_TOKEN = "7218060489:AAEx4jhciHiBh1Vxpo-MVkHHkHXObcR2dxg"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # Папка для сохранения загружаемых файлов (при необходимости измените путь)
