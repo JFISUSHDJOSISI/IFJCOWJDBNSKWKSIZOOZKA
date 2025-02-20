@@ -398,7 +398,10 @@ def process_download(chat_id: int) -> None:
                 "Попробуйте уточнить запрос."
             )
     except Exception as e:
-        bot.send_message(chat_id, f"Произошла ошибка: {e}")
+        bot.send_message(
+            chat_id,
+            f"Произошла ошибка: {e}"
+        )
     user_states.pop(chat_id, None)
 
 
