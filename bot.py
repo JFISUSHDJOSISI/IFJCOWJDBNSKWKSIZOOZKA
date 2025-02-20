@@ -276,7 +276,7 @@ def epub2_download(query: str, author: str, folder_path: Path) -> Optional[str]:
         lst_name,
         lst_ath,
         lst_ppp,
-        author,
+        author
     )
     if not epub_links:
         return None
