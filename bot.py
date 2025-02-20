@@ -7,23 +7,33 @@ from telebot import types
 from bs4 import BeautifulSoup
 from requests_tor import RequestsTor
 
+
 # Укажите здесь ваш токен Telegram-бота
 BOT_TOKEN = "7218060489:AAEx4jhciHiBh1Vxpo-MVkHHkHXObcR2dxg"
 bot = telebot.TeleBot(BOT_TOKEN)
+
 
 # Папка для сохранения загружаемых файлов (при необходимости измените путь)
 folder = Path("downloads")
 if not folder.exists():
     folder.mkdir(parents=True, exist_ok=True)
 
+
 # URL для поиска и скачивания (для сайта Flibusta по сети Tor)
-url = "http://flibustaongezhld6dibs2dps6vm4nvqg2kp7vgowbu76tzopgnhazqd.onion/booksearch?ask="
-url2 = "http://flibustaongezhld6dibs2dps6vm4nvqg2kp7vgowbu76tzopgnhazqd.onion"
+url = (
+    "http://flibustaongezhld6dibs2dps6vm4nvqg2kp7vgowbu76tzopgnhazqd.onion/"
+    "booksearch?ask="
+)
+url2 = (
+    "http://flibustaongezhld6dibs2dps6vm4nvqg2kp7vgowbu76tzopgnhazqd.onion"
+)
+
 
 def search(s: str, lst_fb2: List[str], lst_epub: List[str],
-           lst_name: List[str], lst_ath: List[str], lst_ppp: List[str]
+           lst_name: List[str], lst_ath: List[str],
+           lst_ppp: List[str]
            ) -> Tuple[List[str], List[str], List[str], List[str]]:
-    lst_y: List[str] = []
+    list_links: List[str] = []
     rt = RequestsTor()
     response = rt.get(url + s)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -33,17 +43,18 @@ def search(s: str, lst_fb2: List[str], lst_epub: List[str],
             if s_part[1] not in lst_ppp:
                 g = s_part[0].split('<a href="')
                 u = g[1].split('">')
-                lst_y.append(u[0])
+                list_links.append(u[0])
                 lst_ppp.append(s_part[1])
-    l = lst_y[:5]
+    links = list_links[:5]
     lst_ppp.clear()
-    return books_links(l, lst_fb2, lst_epub, lst_name, lst_ath)
+    return books_links(links, lst_fb2, lst_epub, lst_name, lst_ath)
 
-def books_links(l: List[str], lst_fb2: List[str], lst_epub: List[str],
+
+def books_links(links: List[str], lst_fb2: List[str], lst_epub: List[str],
                 lst_name: List[str], lst_ath: List[str]
                 ) -> Tuple[List[str], List[str], List[str], List[str]]:
     rt = RequestsTor()
-    for el in l:
+    for el in links:
         response = rt.get(url2 + el)
         soup = BeautifulSoup(response.text, "html.parser")
         for link in soup.find_all("a"):
@@ -70,7 +81,8 @@ def books_links(l: List[str], lst_fb2: List[str], lst_epub: List[str],
                         lst_name.append(name[:-1])
         for link in soup.find_all("a"):
             if "fb2" in str(soup):
-                if "title" not in str(link) and "/a/" in str(link) and "all" not in str(link):
+                if ("title" not in str(link) and "/a/" in str(link)
+                        and "all" not in str(link)):
                     w = str(link).replace(">", "%")
                     e = w.replace("<", "%")
                     r = e.split("%")
@@ -80,11 +92,12 @@ def books_links(l: List[str], lst_fb2: List[str], lst_epub: List[str],
                     break
     return lst_fb2, lst_epub, lst_name, lst_ath
 
+
 def search2(s: str, lst_fb2: List[str], lst_epub: List[str],
-            lst_name: List[str], lst_ath: List[str], lst_ppp: List[str],
-            a: str
+            lst_name: List[str], lst_ath: List[str],
+            lst_ppp: List[str], a: str
             ) -> Tuple[List[str], List[str], List[str], List[str]]:
-    lst_y: List[str] = []
+    list_links: List[str] = []
     rt = RequestsTor()
     response = rt.get(url + s)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -97,17 +110,18 @@ def search2(s: str, lst_fb2: List[str], lst_epub: List[str],
             if str(a).lower() in str(n).lower():
                 g = s_part[0].split('<a href="')
                 u = g[1].split('">')
-                lst_y.append(u[0])
+                list_links.append(u[0])
                 lst_ppp.append(s_part[1])
-    l = lst_y[:5]
+    links = list_links[:5]
     lst_ppp.clear()
-    return books_links2(l, lst_fb2, lst_epub, lst_name, lst_ath)
+    return books_links2(links, lst_fb2, lst_epub, lst_name, lst_ath)
 
-def books_links2(l: List[str], lst_fb2: List[str], lst_epub: List[str],
+
+def books_links2(links: List[str], lst_fb2: List[str], lst_epub: List[str],
                  lst_name: List[str], lst_ath: List[str]
                  ) -> Tuple[List[str], List[str], List[str], List[str]]:
     rt = RequestsTor()
-    for el in l:
+    for el in links:
         response = rt.get(url2 + el)
         soup = BeautifulSoup(response.text, "html.parser")
         for link in soup.find_all("a"):
@@ -142,7 +156,8 @@ def books_links2(l: List[str], lst_fb2: List[str], lst_epub: List[str],
                         lst_name.append(name[:-1])
         for link in soup.find_all("a"):
             if "fb2" in str(soup):
-                if "title" not in str(link) and "/a/" in str(link) and "all" not in str(link):
+                if ("title" not in str(link) and "/a/" in str(link)
+                        and "all" not in str(link)):
                     w = str(link).replace(">", "%")
                     e = w.replace("<", "%")
                     r = e.split("%")
@@ -151,6 +166,7 @@ def books_links2(l: List[str], lst_fb2: List[str], lst_epub: List[str],
                     lst_ath.append(n[-1])
                     break
     return lst_fb2, lst_epub, lst_name, lst_ath
+
 
 def download_file(file_url: str, full_path: Path) -> str:
     rt = RequestsTor()
@@ -161,13 +177,14 @@ def download_file(file_url: str, full_path: Path) -> str:
         f.write(response.content)
     return str(filepath)
 
+
 def fb2_download(query: str, folder_path: Path) -> Optional[str]:
     lst_fb2: List[str] = []
     lst_epub: List[str] = []
     lst_name: List[str] = []
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
-    fb2_links, _, book_names, book_authors = search(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp)
+    fb2_links, _, _, _ = search(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp)
     if not fb2_links:
         return None
     c = randint(0, 9000000)
@@ -180,6 +197,7 @@ def fb2_download(query: str, folder_path: Path) -> Optional[str]:
     file_url = fb2_links[0]
     filepath = download_file(file_url, full_path)
     return filepath
+
 
 def epub_download(query: str, folder_path: Path) -> Optional[str]:
     lst_fb2: List[str] = []
@@ -187,7 +205,7 @@ def epub_download(query: str, folder_path: Path) -> Optional[str]:
     lst_name: List[str] = []
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
-    fb2_links, epub_links, book_names, book_authors = search(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp)
+    fb2_links, epub_links, _, _ = search(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp)
     if not epub_links:
         return None
     c = randint(0, 9000000)
@@ -201,13 +219,14 @@ def epub_download(query: str, folder_path: Path) -> Optional[str]:
     filepath = download_file(file_url, full_path)
     return filepath
 
+
 def fb22_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     lst_fb2: List[str] = []
     lst_epub: List[str] = []
     lst_name: List[str] = []
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
-    fb2_links, _, book_names, book_authors = search2(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author)
+    fb2_links, _, _, _ = search2(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author)
     if not fb2_links:
         return None
     c = randint(0, 9000000)
@@ -221,13 +240,14 @@ def fb22_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     filepath = download_file(file_url, full_path)
     return filepath
 
+
 def epub2_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     lst_fb2: List[str] = []
     lst_epub: List[str] = []
     lst_name: List[str] = []
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
-    fb2_links, epub_links, book_names, book_authors = search2(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author)
+    fb2_links, epub_links, _, _ = search2(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author)
     if not epub_links:
         return None
     c = randint(0, 9000000)
@@ -241,8 +261,10 @@ def epub2_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     filepath = download_file(file_url, full_path)
     return filepath
 
+
 # Словарь для хранения промежуточных данных пользователя (состояния диалога)
 user_states: dict = {}
+
 
 @bot.message_handler(commands=["start"])
 def start_handler(message: types.Message) -> None:
@@ -255,6 +277,7 @@ def start_handler(message: types.Message) -> None:
         reply_markup=markup
     )
     bot.register_next_step_handler(message, process_search_type)
+
 
 def process_search_type(message: types.Message) -> None:
     chat_id = message.chat.id
@@ -272,6 +295,7 @@ def process_search_type(message: types.Message) -> None:
     )
     bot.register_next_step_handler(message, process_book_format)
 
+
 def process_book_format(message: types.Message) -> None:
     chat_id = message.chat.id
     text = message.text.strip()
@@ -281,6 +305,7 @@ def process_book_format(message: types.Message) -> None:
     user_states[chat_id]["book_format"] = int(text)
     bot.send_message(chat_id, "Введите название книги:")
     bot.register_next_step_handler(message, process_book_name)
+
 
 def process_book_name(message: types.Message) -> None:
     chat_id = message.chat.id
@@ -292,11 +317,13 @@ def process_book_name(message: types.Message) -> None:
     else:
         process_download(chat_id)
 
+
 def process_author(message: types.Message) -> None:
     chat_id = message.chat.id
     author = message.text.strip()
     user_states[chat_id]["author"] = author
     process_download(chat_id)
+
 
 def process_download(chat_id: int) -> None:
     search_type = user_states[chat_id]["search_type"]
@@ -304,7 +331,10 @@ def process_download(chat_id: int) -> None:
     book_name = user_states[chat_id]["book_name"]
     folder_path = folder
     file_path: Optional[str] = None
-    bot.send_message(chat_id, "Происходит поиск и скачивание книги, пожалуйста, подождите...")
+    bot.send_message(
+        chat_id,
+        "Происходит поиск и скачивание книги, пожалуйста, подождите..."
+    )
     try:
         if search_type == 1:
             if book_format == 1:
@@ -322,10 +352,14 @@ def process_download(chat_id: int) -> None:
                 bot.send_document(chat_id, doc)
             bot.send_message(chat_id, "Книга успешно загружена.")
         else:
-            bot.send_message(chat_id, "Не удалось найти или скачать книгу. Попробуйте уточнить запрос.")
+            bot.send_message(
+                chat_id,
+                "Не удалось найти или скачать книгу. Попробуйте уточнить запрос."
+            )
     except Exception as e:
         bot.send_message(chat_id, f"Произошла ошибка: {e}")
     user_states.pop(chat_id, None)
+
 
 if __name__ == "__main__":
     bot.polling()
