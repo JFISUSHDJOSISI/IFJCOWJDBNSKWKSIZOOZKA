@@ -184,7 +184,9 @@ def fb2_download(query: str, folder_path: Path) -> Optional[str]:
     lst_name: List[str] = []
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
-    fb2_links, _, _, _ = search(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp)
+    fb2_links, _, _, _ = search(
+        query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp
+    )
     if not fb2_links:
         return None
     c = randint(0, 9000000)
@@ -205,7 +207,9 @@ def epub_download(query: str, folder_path: Path) -> Optional[str]:
     lst_name: List[str] = []
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
-    fb2_links, epub_links, _, _ = search(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp)
+    fb2_links, epub_links, _, _ = search(
+        query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp
+    )
     if not epub_links:
         return None
     c = randint(0, 9000000)
@@ -226,7 +230,9 @@ def fb22_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     lst_name: List[str] = []
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
-    fb2_links, _, _, _ = search2(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author)
+    fb2_links, _, _, _ = search2(
+        query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author
+    )
     if not fb2_links:
         return None
     c = randint(0, 9000000)
@@ -247,7 +253,9 @@ def epub2_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     lst_name: List[str] = []
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
-    fb2_links, epub_links, _, _ = search2(query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author)
+    fb2_links, epub_links, _, _ = search2(
+        query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author
+    )
     if not epub_links:
         return None
     c = randint(0, 9000000)
@@ -269,14 +277,21 @@ user_states: dict = {}
 @bot.message_handler(commands=["start"])
 def start_handler(message: types.Message) -> None:
     user_states[message.chat.id] = {}
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(
+        one_time_keyboard=True,
+        resize_keyboard=True
+    )
     markup.add("1", "2")
     bot.send_message(
         message.chat.id,
-        "Выберите тип поиска:\n1 – по названию книги\n2 – по названию и автору",
+        "Выберите тип поиска:\n"
+        "1 – по названию книги\n"
+        "2 – по названию и автору",
         reply_markup=markup
     )
-    bot.register_next_step_handler(message, process_search_type)
+    bot.register_next_step_handler(
+        message, process_search_type
+    )
 
 
 def process_search_type(message: types.Message) -> None:
@@ -286,14 +301,21 @@ def process_search_type(message: types.Message) -> None:
         bot.send_message(chat_id, "Пожалуйста, выберите вариант 1 или 2.")
         return
     user_states[chat_id]["search_type"] = int(text)
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(
+        one_time_keyboard=True,
+        resize_keyboard=True
+    )
     markup.add("1", "2")
     bot.send_message(
         chat_id,
-        "Выберите формат книги:\n1 – fb2\n2 – epub",
+        "Выберите формат книги:\n"
+        "1 – fb2\n"
+        "2 – epub",
         reply_markup=markup
     )
-    bot.register_next_step_handler(message, process_book_format)
+    bot.register_next_step_handler(
+        message, process_book_format
+    )
 
 
 def process_book_format(message: types.Message) -> None:
@@ -354,7 +376,8 @@ def process_download(chat_id: int) -> None:
         else:
             bot.send_message(
                 chat_id,
-                "Не удалось найти или скачать книгу. Попробуйте уточнить запрос."
+                "Не удалось найти или скачать книгу. "
+                "Попробуйте уточнить запрос."
             )
     except Exception as e:
         bot.send_message(chat_id, f"Произошла ошибка: {e}")
