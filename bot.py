@@ -185,7 +185,12 @@ def fb2_download(query: str, folder_path: Path) -> Optional[str]:
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
     fb2_links, _, _, _ = search(
-        query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp
+        query,
+        lst_fb2,
+        lst_epub,
+        lst_name,
+        lst_ath,
+        lst_ppp,
     )
     if not fb2_links:
         return None
@@ -208,7 +213,12 @@ def epub_download(query: str, folder_path: Path) -> Optional[str]:
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
     fb2_links, epub_links, _, _ = search(
-        query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp
+        query,
+        lst_fb2,
+        lst_epub,
+        lst_name,
+        lst_ath,
+        lst_ppp,
     )
     if not epub_links:
         return None
@@ -231,7 +241,13 @@ def fb22_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
     fb2_links, _, _, _ = search2(
-        query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author
+        query,
+        lst_fb2,
+        lst_epub,
+        lst_name,
+        lst_ath,
+        lst_ppp,
+        author,
     )
     if not fb2_links:
         return None
@@ -254,7 +270,13 @@ def epub2_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     lst_ath: List[str] = []
     lst_ppp: List[str] = []
     fb2_links, epub_links, _, _ = search2(
-        query, lst_fb2, lst_epub, lst_name, lst_ath, lst_ppp, author
+        query,
+        lst_fb2,
+        lst_epub,
+        lst_name,
+        lst_ath,
+        lst_ppp,
+        author,
     )
     if not epub_links:
         return None
@@ -289,9 +311,7 @@ def start_handler(message: types.Message) -> None:
         "2 – по названию и автору",
         reply_markup=markup
     )
-    bot.register_next_step_handler(
-        message, process_search_type
-    )
+    bot.register_next_step_handler(message, process_search_type)
 
 
 def process_search_type(message: types.Message) -> None:
@@ -313,9 +333,7 @@ def process_search_type(message: types.Message) -> None:
         "2 – epub",
         reply_markup=markup
     )
-    bot.register_next_step_handler(
-        message, process_book_format
-    )
+    bot.register_next_step_handler(message, process_book_format)
 
 
 def process_book_format(message: types.Message) -> None:
