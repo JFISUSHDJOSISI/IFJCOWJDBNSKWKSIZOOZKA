@@ -1,6 +1,6 @@
-import os
 from random import randint
 from typing import List, Tuple, Optional
+from pathlib import Path
 
 import telebot
 from telebot import types
@@ -12,9 +12,9 @@ BOT_TOKEN = "7218060489:AAEx4jhciHiBh1Vxpo-MVkHHkHXObcR2dxg"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # Папка для сохранения загружаемых файлов (при необходимости измените путь)
-folder = "downloads"
-if not os.path.exists(folder):
-    os.makedirs(folder)
+folder = Path("downloads")
+if not folder.exists():
+    folder.mkdir(parents=True, exist_ok=True)
 
 # URL для поиска и скачивания (для сайта Flibusta по сети Tor)
 url = "http://flibustaongezhld6dibs2dps6vm4nvqg2kp7vgowbu76tzopgnhazqd.onion/booksearch?ask="
@@ -152,16 +152,16 @@ def books_links2(l: List[str], lst_fb2: List[str], lst_epub: List[str],
                     break
     return lst_fb2, lst_epub, lst_name, lst_ath
 
-def download_file(file_url: str, full_path: str) -> str:
+def download_file(file_url: str, full_path: Path) -> str:
     rt = RequestsTor()
     response = rt.get(file_url)
     filename = file_url.split("/")[-1]
-    filepath = os.path.join(full_path, filename)
+    filepath = full_path / filename
     with open(filepath, "wb") as f:
         f.write(response.content)
-    return filepath
+    return str(filepath)
 
-def fb2_download(query: str, folder_path: str) -> Optional[str]:
+def fb2_download(query: str, folder_path: Path) -> Optional[str]:
     lst_fb2: List[str] = []
     lst_epub: List[str] = []
     lst_name: List[str] = []
@@ -171,17 +171,17 @@ def fb2_download(query: str, folder_path: str) -> Optional[str]:
     if not fb2_links:
         return None
     c = randint(0, 9000000)
-    full_path = os.path.join(folder_path, f"papka_{c}")
-    if not os.path.exists(full_path):
-        os.makedirs(full_path)
+    full_path = Path(folder_path) / f"papka_{c}"
+    if not full_path.exists():
+        full_path.mkdir(parents=True, exist_ok=True)
     else:
-        full_path = os.path.join(folder_path, f"papka_{c + 16}")
-        os.makedirs(full_path)
+        full_path = Path(folder_path) / f"papka_{c + 16}"
+        full_path.mkdir(parents=True, exist_ok=True)
     file_url = fb2_links[0]
     filepath = download_file(file_url, full_path)
     return filepath
 
-def epub_download(query: str, folder_path: str) -> Optional[str]:
+def epub_download(query: str, folder_path: Path) -> Optional[str]:
     lst_fb2: List[str] = []
     lst_epub: List[str] = []
     lst_name: List[str] = []
@@ -191,17 +191,17 @@ def epub_download(query: str, folder_path: str) -> Optional[str]:
     if not epub_links:
         return None
     c = randint(0, 9000000)
-    full_path = os.path.join(folder_path, f"papka_{c}")
-    if not os.path.exists(full_path):
-        os.makedirs(full_path)
+    full_path = Path(folder_path) / f"papka_{c}"
+    if not full_path.exists():
+        full_path.mkdir(parents=True, exist_ok=True)
     else:
-        full_path = os.path.join(folder_path, f"papka_{c + 16}")
-        os.makedirs(full_path)
+        full_path = Path(folder_path) / f"papka_{c + 16}"
+        full_path.mkdir(parents=True, exist_ok=True)
     file_url = epub_links[0]
     filepath = download_file(file_url, full_path)
     return filepath
 
-def fb22_download(query: str, author: str, folder_path: str) -> Optional[str]:
+def fb22_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     lst_fb2: List[str] = []
     lst_epub: List[str] = []
     lst_name: List[str] = []
@@ -211,17 +211,17 @@ def fb22_download(query: str, author: str, folder_path: str) -> Optional[str]:
     if not fb2_links:
         return None
     c = randint(0, 9000000)
-    full_path = os.path.join(folder_path, f"papka_{c}")
-    if not os.path.exists(full_path):
-        os.makedirs(full_path)
+    full_path = Path(folder_path) / f"papka_{c}"
+    if not full_path.exists():
+        full_path.mkdir(parents=True, exist_ok=True)
     else:
-        full_path = os.path.join(folder_path, f"papka_{c + 16}")
-        os.makedirs(full_path)
+        full_path = Path(folder_path) / f"papka_{c + 16}"
+        full_path.mkdir(parents=True, exist_ok=True)
     file_url = fb2_links[0]
     filepath = download_file(file_url, full_path)
     return filepath
 
-def epub2_download(query: str, author: str, folder_path: str) -> Optional[str]:
+def epub2_download(query: str, author: str, folder_path: Path) -> Optional[str]:
     lst_fb2: List[str] = []
     lst_epub: List[str] = []
     lst_name: List[str] = []
@@ -231,12 +231,12 @@ def epub2_download(query: str, author: str, folder_path: str) -> Optional[str]:
     if not epub_links:
         return None
     c = randint(0, 9000000)
-    full_path = os.path.join(folder_path, f"papka_{c}")
-    if not os.path.exists(full_path):
-        os.makedirs(full_path)
+    full_path = Path(folder_path) / f"papka_{c}"
+    if not full_path.exists():
+        full_path.mkdir(parents=True, exist_ok=True)
     else:
-        full_path = os.path.join(folder_path, f"papka_{c + 16}")
-        os.makedirs(full_path)
+        full_path = Path(folder_path) / f"papka_{c + 16}"
+        full_path.mkdir(parents=True, exist_ok=True)
     file_url = epub_links[0]
     filepath = download_file(file_url, full_path)
     return filepath
@@ -317,7 +317,7 @@ def process_download(chat_id: int) -> None:
                 file_path = fb22_download(book_name, author, folder_path)
             elif book_format == 2:
                 file_path = epub2_download(book_name, author, folder_path)
-        if file_path and os.path.exists(file_path):
+        if file_path and Path(file_path).exists():
             with open(file_path, "rb") as doc:
                 bot.send_document(chat_id, doc)
             bot.send_message(chat_id, "Книга успешно загружена.")
