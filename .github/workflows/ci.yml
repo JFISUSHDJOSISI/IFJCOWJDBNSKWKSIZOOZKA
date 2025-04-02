@@ -28,4 +28,4 @@ jobs:
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
       run: |
-        python your_bot_file.py
+        python bot.py
