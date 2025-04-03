@@ -1,5 +1,5 @@
 import os
-import time
+import tim
 import telebot
 import requests
 import random
